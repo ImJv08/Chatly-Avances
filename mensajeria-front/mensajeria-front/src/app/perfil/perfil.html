@@ -1,0 +1,25 @@
+<div class="fondo">
+  <form class="caja" (click)="$event.stopPropagation()">
+    <h2>Mi perfil</h2>
+
+    <label class="foto">
+      <div class="avatar" [style.background-image]="vistaPrevia ? 'url(' + vistaPrevia + ')' : null">
+        @if (!vistaPrevia) { <span>📷</span> }
+      </div>
+      <input type="file" accept="image/*" (change)="onFoto($event)" />
+    </label>
+    <small class="hint">Toca el círculo para cambiar tu foto</small>
+
+    <div class="campos">
+      <input type="text" name="primerNombre" placeholder="Primer nombre" [(ngModel)]="usuario.primerNombre" />
+      <input type="text" name="segundoNombre" placeholder="Segundo nombre (opcional)" [(ngModel)]="usuario.segundoNombre" />
+      <input type="text" name="primerApellido" placeholder="Primer apellido" [(ngModel)]="usuario.primerApellido" />
+      <input type="text" name="segundoApellido" placeholder="Segundo apellido (opcional)" [(ngModel)]="usuario.segundoApellido" />
+      <input class = "telefono" type="tel" name="numeroTelefonico" maxlength="10" [(ngModel)]="usuario.numeroTelefonico" />
+    </div>
+
+    <button type="button" class="btn" (click)="actualizar()">Guardar</button>
+    <button type="button" class="btn" (click)="quitarFoto()">Quitar foto</button>
+    <a class="lnk" (click)="onCerrar()">Cerrar</a>
+  </form>
+</div>

@@ -1,0 +1,69 @@
+:host {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  color: var(--ink);
+}
+
+.pagina {
+  flex: 1;
+  overflow: auto;
+  padding: 14px;
+}
+
+.cab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.cab h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.btn {
+  background: var(--yellow);
+  color: var(--on);
+  border: 3px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cuadricula {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.estado {
+  width: 88px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mini {
+  width: 88px;
+  height: 88px;
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--on);
+  overflow: hidden;
+}

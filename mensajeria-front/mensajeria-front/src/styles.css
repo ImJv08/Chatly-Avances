@@ -1,0 +1,139 @@
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #17171f;
+}
+
+:root {
+  --paper: #17171f;
+  --card: #262630;
+  --ink: #f4f1e8;
+  --on: #111;
+  --yellow: #ffc900;
+  --pink: #ff90e8;
+  --blue: #8ec5ff;
+  --orange: #ff7a59;
+  --red: #e0245e;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--paper);
+}
+
+.av {
+  width: 50px;
+  height: 50px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  font-weight: 900;
+  color: var(--on);
+  background-size: cover;
+  background-position: center;
+  object-fit: cover;
+}
+.av.sm { width: 32px; height: 32px; font-size: 12px; border-color: transparent; }
+.av.lg { width: 90px; height: 90px; font-size: 28px; }
+
+.rosa { background-color: var(--pink); }
+.amarillo { background-color: var(--yellow); }
+.naranja { background-color: var(--orange); }
+.azul { background-color: var(--blue); }
+
+/* ---------- Ventanas de Chatly ---------- */
+.cl-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 9;
+  color: var(--ink);
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+.cl-caja {
+  background: var(--card);
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cl-caja h2 {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.cl-caja p {
+  margin: 0;
+}
+
+.cl-campo {
+  width: 100%;
+  padding: 11px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 0;
+  font: inherit;
+}
+
+.cl-err {
+  color: #ff5c8a;
+  font-weight: 700;
+  min-height: 18px;
+  font-size: 14px;
+}
+
+.cl-btn {
+  background: var(--yellow);
+  color: var(--on);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 9px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.cl-btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.cl-btn.rosa { background: var(--pink); }
+.cl-btn.azul { background: var(--blue); }
+.cl-btn.verde { background: #90e0c5; }
+.cl-btn.chico {
+  font-size: 11px;
+  padding: 5px 9px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.cl-lnk {
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}

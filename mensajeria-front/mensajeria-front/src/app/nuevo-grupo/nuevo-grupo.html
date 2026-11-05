@@ -1,0 +1,38 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <form class="cl-caja" (click)="$event.stopPropagation()">
+    <h2>Nuevo grupo</h2>
+
+    <label class="foto">
+      <div class="av lg azul">📷</div>
+      <input type="file" accept="image/*" />
+    </label>
+    <small class="hint">Foto del grupo (opcional)</small>
+
+    <input class="cl-campo" type="text" name="nombre"
+           placeholder="Nombre del grupo" />
+
+    <b>Integrantes</b>
+    <div class="contactos">
+      <label class="ck">
+        <input type="checkbox" />
+        <div class="av sm rosa">C</div>
+        Camila
+      </label>
+      <label class="ck">
+        <input type="checkbox" />
+        <div class="av sm amarillo">A</div>
+        Andrés
+      </label>
+      <label class="ck">
+        <input type="checkbox" />
+        <div class="av sm azul">L</div>
+        Laura
+      </label>
+    </div>
+
+    <div class="cl-err"></div>
+
+    <button type="submit" class="cl-btn rosa">Crear grupo (serás admin)</button>
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">Cerrar</button>
+  </form>
+</div>

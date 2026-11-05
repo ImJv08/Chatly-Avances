@@ -1,0 +1,44 @@
+<aside class="panel">
+  <div class="ph">
+    <h2>Chats</h2>
+    <button class="btn azul" (click)="modal = 'contacto'">+ Nuevo</button>
+    <button class="btn rosa" (click)="modal = 'grupo'">+ Grupo</button>
+    <button class="btn" (click)="verBloqueados = true">🚫 Bloqueados</button>
+    <small class="cuenta">Cuenta: Juana Demo</small>
+    <input type="text" placeholder="🔍 Buscar chat por nombre…" />
+  </div>
+
+  <div class="list">
+    <div class="chat-card">
+      <div class="av rosa">C</div>
+      <div class="m">
+        <b>Camila</b>
+        <small>¿Ya hiciste el taller?</small>
+      </div>
+      <span class="badge">1</span>
+    </div>
+
+    <div class="chat-card">
+      <div class="av amarillo">PS</div>
+      <div class="m">
+        <b>Proyecto Software <span class="tag">GRUPO</span></b>
+        <small>Andrés: Mañana reunión a las 3</small>
+      </div>
+      <span class="badge">1</span>
+    </div>
+  </div>
+</aside>
+
+<section class="main">
+  <div class="empty">
+    <h1>Chatly!</h1>
+    <p>Elige un chat o crea uno nuevo</p>
+  </div>
+</section>
+
+@if (verBloqueados) {
+  <app-bloqueados (cerrar)="verBloqueados = false" />
+}
+
+@if (modal === 'contacto') { <app-nuevo-contacto (cerrar)="modal = null" /> }
+@if (modal === 'grupo') { <app-nuevo-grupo (cerrar)="modal = null" /> }

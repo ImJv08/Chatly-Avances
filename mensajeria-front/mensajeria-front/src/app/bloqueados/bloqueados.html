@@ -1,0 +1,28 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <div class="cl-caja" (click)="$event.stopPropagation()">
+    <h2>Bloqueados</h2>
+
+    <div class="item">
+      <div class="av azul">L</div>
+      <div class="m">
+        <b>3039876543</b>
+        <small>Bloqueado</small>
+      </div>
+      <button type="button" class="cl-btn verde chico">Desbloquear</button>
+    </div>
+
+    <div class="item">
+      <div class="av rosa">M</div>
+      <div class="m">
+        <b>Mamá</b>
+        <small>Bloqueado</small>
+      </div>
+      <button type="button" class="cl-btn verde chico">Desbloquear</button>
+    </div>
+
+    <!-- cuando no haya bloqueados, muestra esto en lugar de los items -->
+    <!-- <p class="vacio">No tienes contactos bloqueados.</p> -->
+
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">Cerrar</button>
+  </div>
+</div>
