@@ -1,0 +1,19 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <form class="cl-caja" (click)="$event.stopPropagation()">
+    <h2>Nuevo chat</h2>
+    <p>
+      Escribe el número de alguien que tenga cuenta en Chatly. Si le pones
+      nombre, queda guardado como contacto; si no, verás su número.
+    </p>
+
+    <input class="cl-campo" type="text" name="nombre"
+           placeholder="Nombre (opcional)" />
+    <input class="cl-campo" type="tel" name="telefono"
+           placeholder="Número de celular" inputmode="tel" />
+
+    <div class="cl-err"></div>
+
+    <button type="submit" class="cl-btn">Abrir chat</button>
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">Cerrar</button>
+  </form>
+</div>

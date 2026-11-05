@@ -1,0 +1,116 @@
+:host {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  color: var(--ink);
+}
+
+.panel {
+  width: 420px;
+  border-right: 4px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ph {
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ph h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.btn {
+  background: var(--yellow);
+  color: var(--on);
+  border: 3px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn:active { transform: translate(2px, 2px); box-shadow: none; }
+.btn.azul { background: var(--blue); }
+.btn.rosa { background: var(--pink); }
+
+.cuenta { width: 100%; font-weight: 700; }
+
+.ph input {
+  width: 100%;
+  padding: 11px;
+  border: 3px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 0;
+  font: inherit;
+}
+
+.list {
+  flex: 1;
+  overflow: auto;
+  padding: 4px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-card {
+  background: var(--card);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.chat-card .m { flex: 1; min-width: 0; }
+.chat-card b { display: block; }
+.chat-card small {
+  display: block;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 900;
+  border: 2px solid var(--ink);
+  padding: 1px 5px;
+  background: var(--pink);
+  color: var(--on);
+  margin-left: 4px;
+}
+
+.badge {
+  background: var(--red);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+.main { flex: 1; min-width: 0; display: flex; }
+.empty { margin: auto; text-align: center; padding: 20px; }
+.empty h1 { margin: 0; font-size: 54px; font-weight: 900; letter-spacing: -1px; }
+
+@media (max-width: 720px) {
+  .panel { width: 100%; border: 0; }
+  .main { display: none; }
+}

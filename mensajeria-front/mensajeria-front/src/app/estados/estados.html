@@ -1,0 +1,25 @@
+<section class="pagina">
+  <div class="cab">
+    <h2>Estados</h2>
+    <button class="btn" (click)="modal = 'estados'">+ Mi estado</button>
+  </div>
+
+  <div class="cuadricula">
+    <div class="estado">
+      <div class="mini" style="background: var(--blue)">De viaje ✈️</div>
+      Camila
+    </div>
+    <div class="estado">
+      <div class="mini" style="background: var(--pink)">Estudiando BD 📚</div>
+      Andrés
+    </div>
+    <div class="estado">
+      <div class="mini" style="background: var(--yellow)">Café y código ☕</div>
+      Laura
+    </div>
+  </div>
+</section>
+
+@if (modal === 'estados') {
+  <app-nuevo-estado (cerrar)="modal = null" />
+}
