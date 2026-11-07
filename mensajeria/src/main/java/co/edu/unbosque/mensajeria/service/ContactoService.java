@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.mensajeria.dto.ContactoDTO;
+import co.edu.unbosque.mensajeria.dto.ContactoRespuestaDTO;
 import co.edu.unbosque.mensajeria.entity.Contacto;
 import co.edu.unbosque.mensajeria.repository.ContactoRepository;
 import jakarta.transaction.Transactional;
 @Service
 public class ContactoService {
 	
-	@Autowired
 	private final ContactoRepository contactoRepository;
 	
 	public ContactoService(ContactoRepository contactoRepository) {
@@ -20,7 +20,7 @@ public class ContactoService {
 	}
 	
 	public void crearContacto(ContactoDTO contactoDTO) {
-		contactoRepository.crearContacto(contactoDTO.getIdUsuario(), contactoDTO.getIdUsuarioContacto());
+		contactoRepository.crearContacto(contactoDTO.getIdUsuario(), contactoDTO.getIdUsuarioContacto(), contactoDTO.getNombrePersonalizado());
 	}
 	
 	public void eliminarContacto(ContactoDTO contactoDTO) {
@@ -28,7 +28,22 @@ public class ContactoService {
 	}
 
 	@Transactional
-	public List<Contacto> listarContactosPorUsuario(Long idUsuario) {
+	public List<ContactoRespuestaDTO> listarContactosPorUsuario(Long idUsuario) {
 		return contactoRepository.listarContactosPorUsuario(idUsuario);
+	}
+	
+	@Transactional
+	public void actualizarNombreContacto(Long idUsuario, Long idUsuarioContacto, String nombre) {
+	    Long idContacto = contactoRepository.obtenerIdContacto(idUsuario, idUsuarioContacto);
+
+	    System.out.println("ID de contacto encontrado: " + idContacto);
+
+	    if (idContacto == null) {
+	        throw new RuntimeException("No se encontró el contacto");
+	    }
+
+	    contactoRepository.actualizarNombreContacto(idContacto, nombre);
+
+	    System.out.println("Nombre actualizado correctamente");
 	}
 }

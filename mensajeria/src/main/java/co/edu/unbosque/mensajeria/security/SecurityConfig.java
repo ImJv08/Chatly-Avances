@@ -83,6 +83,7 @@ public class SecurityConfig {
 						
 						.requestMatchers("/error").permitAll()
 						
+						
 						// Cualquier otra petición al backend requerirá token JWT válido
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

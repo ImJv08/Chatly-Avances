@@ -32,6 +32,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	@Query(value = "SELECT * FROM public.fn_buscar_por_numero(:numero)", nativeQuery = true)
 	public Optional<Usuario> buscarPorNumero(@Param("numero") String numero);
 	
-
+     
 	
 }

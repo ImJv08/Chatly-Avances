@@ -1,6 +1,7 @@
 package co.edu.unbosque.mensajeria.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,8 @@ public class GrupoController {
 
 	@PostMapping("/crearGrupo")
 	public ResponseEntity<?> crearGrupo(@RequestBody GrupoDTO grupoDTO) {
-
-		grupoService.crearGrupo(grupoDTO);
-
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	    grupoService.crearGrupo(grupoDTO);
+	    return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@PostMapping("/agregarMiembros/{idOrigen}")
@@ -83,6 +82,15 @@ public class GrupoController {
 	        @PathVariable Long idUsuario) {
 
 	    return ResponseEntity.ok(grupoService.listarGruposPorUsuario(idUsuario));
+	}
+	
+	@GetMapping("/usuario/{idUsuario}/con-rol")
+	public ResponseEntity<List<Map<String, Object>>> listarGruposConRol(
+	        @PathVariable Long idUsuario) {
+
+	    return ResponseEntity.ok(
+	            grupoService.listarGruposConRol(idUsuario)
+	    );
 	}
 	
 }

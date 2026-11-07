@@ -67,10 +67,6 @@ public class UsuarioService {
 		return found.isPresent();
 	}
 
-	/**
-	 * Verifica que el id recibido pertenezca al usuario del token JWT. El username
-	 * del token es el número telefónico.
-	 */
 	public void validarUsuarioAutenticado(Long idUsuario) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null || auth.getName() == null) {
@@ -155,6 +151,10 @@ public class UsuarioService {
 		dto.setNumeroTelefonico(entity.getNumeroTelefonico());
 
 		return dto;
+	}
+	
+	public Optional<Usuario> buscarPorNumero(String numeroTelefonico) {
+	    return usuarioRepository.buscarPorNumero(numeroTelefonico);
 	}
 
 }

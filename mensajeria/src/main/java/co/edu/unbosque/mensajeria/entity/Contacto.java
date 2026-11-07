@@ -36,17 +36,21 @@ public class Contacto {
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
 	private Date fechaAgregado;
+	
+	@Column(name = "nombre_personalizado", length = 100)
+	private String nombrePersonalizado;
 
 	public Contacto() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Contacto(Long id, Usuario usuario, Usuario usuarioContacto, Date fechaAgregado) {
+	
+	public Contacto(Usuario usuario, Usuario usuarioContacto, Date fechaAgregado, String nombrePersonalizado) {
 		super();
-		this.id = id;
 		this.usuario = usuario;
 		this.usuarioContacto = usuarioContacto;
 		this.fechaAgregado = fechaAgregado;
+		this.nombrePersonalizado = nombrePersonalizado;
 	}
 
 	public Long getId() {
@@ -80,11 +84,23 @@ public class Contacto {
 	public void setFechaAgregado(Date fechaAgregado) {
 		this.fechaAgregado = fechaAgregado;
 	}
+	
+	
+
+	public String getNombrePersonalizado() {
+		return nombrePersonalizado;
+	}
+
+	public void setNombrePersonalizado(String nombrePersonalizado) {
+		this.nombrePersonalizado = nombrePersonalizado;
+	}
+
 
 	@Override
 	public String toString() {
 		return "Contacto [id=" + id + ", usuario=" + usuario + ", usuarioContacto=" + usuarioContacto
-				+ ", fechaAgregado=" + fechaAgregado + "]";
+				+ ", fechaAgregado=" + fechaAgregado + ", nombrePersonalizado=" + nombrePersonalizado + "]";
 	}
 
+	
 }

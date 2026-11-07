@@ -7,21 +7,24 @@ public class ContactoDTO {
 	
 	private Long id;
 
-	private Long idUsuario; // Dueño de la lista de contactos
-	private Long idUsuarioContacto; // Persona agregada como contacto
+	private Long idUsuario; 
+	private Long idUsuarioContacto; 
 	private Date fechaAgregado;
+	private String nombrePersonalizado;
 
 	public ContactoDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ContactoDTO(Long id, Long idUsuario, Long idUsuarioContacto, Date fechaAgregado) {
+	
+	public ContactoDTO(Long idUsuario, Long idUsuarioContacto, Date fechaAgregado, String nombrePersonalizado) {
 		super();
-		this.id = id;
 		this.idUsuario = idUsuario;
 		this.idUsuarioContacto = idUsuarioContacto;
 		this.fechaAgregado = fechaAgregado;
+		this.nombrePersonalizado = nombrePersonalizado;
 	}
+
 
 	public Long getId() {
 		return id;
@@ -54,12 +57,24 @@ public class ContactoDTO {
 		this.fechaAgregado = fechaAgregado;
 	}
 
+
+	public String getNombrePersonalizado() {
+		return nombrePersonalizado;
+	}
+
+
+	public void setNombrePersonalizado(String nombrePersonalizado) {
+		this.nombrePersonalizado = nombrePersonalizado;
+	}
+
+
 	@Override
 	public String toString() {
 		return "ContactoDTO [id=" + id + ", idUsuario=" + idUsuario + ", idUsuarioContacto=" + idUsuarioContacto
-				+ ", fechaAgregado=" + fechaAgregado + "]";
+				+ ", fechaAgregado=" + fechaAgregado + ", nombrePersonalizado=" + nombrePersonalizado + "]";
 	}
 
+	
 	
 
 
