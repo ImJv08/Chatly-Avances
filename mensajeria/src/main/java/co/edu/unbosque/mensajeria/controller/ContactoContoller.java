@@ -8,20 +8,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.mensajeria.dto.ContactoDTO;
+import co.edu.unbosque.mensajeria.dto.ContactoRespuestaDTO;
 import co.edu.unbosque.mensajeria.entity.Contacto;
-import co.edu.unbosque.mensajeria.entity.Grupo;
 import co.edu.unbosque.mensajeria.service.ContactoService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
 @RequestMapping("/contactos")
 public class ContactoContoller {
     
-	@Autowired
 	private final ContactoService contactoService;
 
 	public ContactoContoller(ContactoService contactoService) {
@@ -29,22 +31,30 @@ public class ContactoContoller {
 	}
 	
 	@PostMapping("/crearContacto")
-	public ResponseEntity<?> crearContacto(ContactoDTO contactoDTO) {
+	public ResponseEntity<?> crearContacto(@RequestBody ContactoDTO contactoDTO) {
 		contactoService.crearContacto(contactoDTO);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
 	@PostMapping("/eliminarContacto")
-	public ResponseEntity<?> eliminarContacto(ContactoDTO contactoDTO) {
+	public ResponseEntity<?> eliminarContacto(@RequestBody ContactoDTO contactoDTO) {
 		contactoService.eliminarContacto(contactoDTO);	
 		return ResponseEntity.ok().build();
 	}
 	
 	@GetMapping("/listaContactos/{idUsuario}")
-	public ResponseEntity<List<Contacto>> listarContactosPorUsuario(
+	public ResponseEntity<List<ContactoRespuestaDTO>> listarContactosPorUsuario(
 	        @PathVariable Long idUsuario) {
 
 	    return ResponseEntity.ok(contactoService.listarContactosPorUsuario(idUsuario));
+	}
+	
+	@PutMapping("/actualizarNombre/{idUsuario}/{idUsuarioContacto}")
+	public ResponseEntity<?> actualizarNombre(@PathVariable Long idUsuario,@PathVariable Long idUsuarioContacto, @RequestParam String nombre) {
+
+	    contactoService.actualizarNombreContacto(idUsuario, idUsuarioContacto, nombre);
+
+	    return ResponseEntity.ok().build();
 	}
 }

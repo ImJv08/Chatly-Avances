@@ -1,6 +1,5 @@
 package co.edu.unbosque.mensajeria.exception;
 
-
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class GlobalExceptionHandler {
         }
 
         String codigo = sqlEx.getSQLState();
-        String mensaje = sqlEx.getMessage();
+        String mensaje = limpiarMensaje(sqlEx.getMessage());
 
         HttpStatus estado;
 
@@ -53,7 +52,6 @@ public class GlobalExceptionHandler {
             };
         }
 
-
         if (estado == HttpStatus.INTERNAL_SERVER_ERROR) {
             mensaje = "Ocurrió un error interno al procesar la solicitud";
         } else if (mensaje == null || mensaje.isBlank()) {
@@ -63,6 +61,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(estado)
                 .body(Map.of("mensaje", mensaje));
+    }
+
+  
+    private String limpiarMensaje(String m) {
+        if (m == null) {
+            return null;
+        }
+        m = m.trim();
+        if (m.startsWith("ERROR:")) {
+            m = m.substring("ERROR:".length());
+        }
+        int salto = m.indexOf('\n');
+        if (salto >= 0) {
+            m = m.substring(0, salto);
+        }
+        int where = m.indexOf("Where:");
+        if (where >= 0) {
+            m = m.substring(0, where);
+        }
+        return m.trim();
     }
 
     private SQLException obtenerSQLException(Throwable ex) {

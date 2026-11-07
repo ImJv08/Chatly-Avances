@@ -8,6 +8,9 @@ import co.edu.unbosque.mensajeria.repository.GrupoRepository;
 import jakarta.transaction.Transactional;
 import co.edu.unbosque.mensajeria.entity.Grupo;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @Service
 public class GrupoService {
@@ -53,6 +56,28 @@ public class GrupoService {
 	@Transactional
 	public List<Grupo> listarGruposPorUsuario(Long idUsuario) {
 		return grupoRepository.listarGruposPorUsuario(idUsuario);
+	}
+	
+	public List<Map<String, Object>> listarGruposConRol(Long idUsuario) {
+	    List<Object[]> resultados =
+	            grupoRepository.listarGruposConRolPorUsuario(idUsuario);
+
+	    List<Map<String, Object>> grupos = new ArrayList<>();
+
+	    for (Object[] fila : resultados) {
+	        Map<String, Object> grupo = new HashMap<>();
+
+	        grupo.put("id", fila[0]);
+	        grupo.put("idCreador", fila[1]);
+	        grupo.put("nombre", fila[2]);
+	        grupo.put("fotoPerfilUrl", fila[3]);
+	        grupo.put("fechaRegistro", fila[4]);
+	        grupo.put("rol", fila[5]);
+
+	        grupos.add(grupo);
+	    }
+
+	    return grupos;
 	}
 
 }

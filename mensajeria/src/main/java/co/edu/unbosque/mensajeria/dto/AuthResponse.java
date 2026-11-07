@@ -10,16 +10,18 @@ public class AuthResponse {
 
     /** Token de autenticación generado para el usuario. */
     private String token;
+    private Long id;
 
     /**
      * Constructor parametrizado para inicializar un objeto {@code AuthResponse}.
      *
      * @param token Token de autenticación a asignar.
      */
-    public AuthResponse(String token) {
-        super();
+    public AuthResponse(String token, Long id) {
         this.token = token;
+        this.id = id;
     }
+
     
     /**
      * Obtiene el token de autenticación.
@@ -37,6 +39,14 @@ public class AuthResponse {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**

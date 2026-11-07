@@ -25,6 +25,7 @@ import co.edu.unbosque.mensajeria.security.JwtUtil;
 import co.edu.unbosque.mensajeria.service.UsuarioService;
 import co.edu.unbosque.mensajeria.dto.AuthResponse;
 import co.edu.unbosque.mensajeria.dto.UsuarioDTO;
+import co.edu.unbosque.mensajeria.entity.Usuario;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,17 +55,28 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UsuarioDTO loginRequest) {
-		try {
-			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					loginRequest.getNumeroTelefonico(), loginRequest.getContrasenia()));
+	    try {
+	        Authentication authentication = authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(
+	                loginRequest.getNumeroTelefonico(),
+	                loginRequest.getContrasenia()
+	            )
+	        );
 
-			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-			String jwt = jwtUtil.generateToken(userDetails);
-			return ResponseEntity.ok(new AuthResponse(jwt));
-		} catch (AuthenticationException e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getClass().getSimpleName());
-		}
+	        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+	        String jwt = jwtUtil.generateToken(userDetails);
+
+	        Usuario usuario = usuarioService.buscarPorNumero(loginRequest.getNumeroTelefonico())
+	            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+	        return ResponseEntity.ok(new AuthResponse(jwt, usuario.getId()));
+
+	    } catch (AuthenticationException e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	            .body(e.getClass().getSimpleName());
+	    }
 	}
 
 	@PostMapping("/register")
@@ -90,18 +102,34 @@ public class AuthController {
 		}
 	}
 
+
 	@PostMapping("/foto")
-	public ResponseEntity<String> subirFoto(@RequestParam("archivo") MultipartFile archivo) throws IOException {
-		String tipo = archivo.getContentType();
-		if (archivo.isEmpty() || tipo == null || !tipo.startsWith("image/")) {
-			return ResponseEntity.badRequest().body("Archivo inválido");
-		}
-		String ext = tipo.substring(tipo.indexOf('/') + 1);
-		String nombre = UUID.randomUUID() + "." + ext;
-		Path destino = Paths.get("uploads").resolve(nombre);
-		Files.createDirectories(destino.getParent());
-		Files.copy(archivo.getInputStream(), destino);
-		return ResponseEntity.ok(baseUrl + "/uploads/" + nombre);
+	public ResponseEntity<String> subirFoto(
+	        @RequestParam("archivo") MultipartFile archivo) throws IOException {
+	
+	    String tipo = archivo.getContentType();
+	
+	    if (archivo.isEmpty() || tipo == null || !tipo.startsWith("image/")) {
+	        return ResponseEntity.badRequest().body("Archivo inválido");
+	    }
+	
+	    String ext = tipo.substring(tipo.indexOf('/') + 1);
+	    String nombre = UUID.randomUUID() + "." + ext;
+	
+	    Path directorio = Paths.get(
+	        System.getProperty("user.dir"),
+	        "uploads",
+	        "perfiles"
+	    );
+	
+	    Files.createDirectories(directorio);
+	
+	    Path destino = directorio.resolve(nombre);
+	
+	    Files.copy(archivo.getInputStream(), destino);
+	
+	    return ResponseEntity.ok(baseUrl + "/uploads/perfiles/" + nombre);
 	}
+
 
 }
