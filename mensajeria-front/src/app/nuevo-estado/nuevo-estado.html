@@ -1,0 +1,20 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <form class="cl-caja" (click)="$event.stopPropagation()">
+    <h2>Mi estado</h2>
+    <p>Sube una imagen o un video. Dura 24 horas.</p>
+
+    <label class="subir">
+      <div class="vista">📷 Toca para elegir imagen o video</div>
+      <input type="file" accept="image/*,video/*" />
+    </label>
+
+    <textarea class="cl-campo" name="descripcion" rows="3" maxlength="500"
+              placeholder="Descripción (máx. 500 caracteres)"></textarea>
+    <small class="contador">0 / 500</small>
+
+    <div class="cl-err"></div>
+
+    <button type="submit" class="cl-btn">Publicar</button>
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">Cerrar</button>
+  </form>
+</div>

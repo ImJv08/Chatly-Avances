@@ -1,0 +1,46 @@
+<div class="registro">
+  <form class="box" (ngSubmit)="onSignUp()">
+    <h1>Crear cuenta</h1>
+
+    <label class="foto">
+      <div class="avatar" [style.background-image]="vistaPrevia ? 'url(' + vistaPrevia + ')' : null">
+        @if (!vistaPrevia) { <span>📷</span> }
+      </div>
+      <input type="file" accept="image/*" (change)="onFoto($event)" />
+    </label>
+    <small class="hint">Toca el círculo para elegir tu foto</small>
+
+    <div class="campos">
+      <input type="text" name="primerNombre" placeholder="Primer nombre" [(ngModel)]="usuario.primerNombre" />
+      <input type="text" name="segundoNombre" placeholder="Segundo nombre (opcional)" [(ngModel)]="usuario.segundoNombre" />
+      <input type="text" name="primerApellido" placeholder="Primer apellido" [(ngModel)]="usuario.primerApellido" />
+      <input type="text" name="segundoApellido" placeholder="Segundo apellido (opcional)" [(ngModel)]="usuario.segundoApellido" />
+
+      <input class="telefono" type="tel" name="numeroTelefonico" placeholder="Número de celular"
+             inputmode="tel" maxlength="10" [(ngModel)]="usuario.numeroTelefonico" />
+
+      <div class="campo-password">
+        <input [type]="verContrasenia ? 'text' : 'password'" name="contrasenia"
+               placeholder="Contraseña" [(ngModel)]="usuario.contrasenia" autocomplete="new-password" />
+        <button type="button" (click)="verContrasenia = !verContrasenia"
+                [attr.aria-label]="verContrasenia ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          {{ verContrasenia ? '🙈' : '👁️' }}
+        </button>
+      </div>
+      <div class="campo-password">
+        <input [type]="verConfirmacion ? 'text' : 'password'" name="confirmPassword"
+               placeholder="Confirmar contraseña" [(ngModel)]="confirmPassword" autocomplete="new-password" />
+        <button type="button" (click)="verConfirmacion = !verConfirmacion"
+                [attr.aria-label]="verConfirmacion ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          {{ verConfirmacion ? '🙈' : '👁️' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+
+    <button type="submit" class="btn">Registrarme</button>
+
+    <a class="lnk" routerLink="">Ya tengo cuenta</a>
+  </form>
+</div>

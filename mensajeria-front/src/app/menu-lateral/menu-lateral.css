@@ -1,0 +1,90 @@
+:host {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+.app {
+  height: 100%;
+  display: flex;
+}
+
+.rail {
+  width: 78px;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.lg {
+  background: var(--yellow);
+  color: var(--on);
+  font-weight: 900;
+  font-size: 22px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  transform: rotate(-6deg);
+}
+
+.nv {
+  background: none;
+  border: 0;
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 8px;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+}
+
+.nv .ico { font-size: 22px; }
+
+.nv.on {
+  background: var(--pink);
+  color: var(--on);
+  border-radius: 10px;
+}
+
+.bd {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--red);
+  color: #fff;
+  font-style: normal;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.contenido {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+@media (max-width: 720px) {
+  .app { flex-direction: column-reverse; }
+  .rail {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 6px 0;
+  }
+  .lg { display: none; }
+}
