@@ -1,0 +1,65 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <form class="cl-caja" (click)="$event.stopPropagation()" (ngSubmit)="crearGrupo()">
+    <h2>Nuevo grupo</h2>
+
+    <label class="foto">
+      <div class="avatar" [style.background-image]="vistaPrevia ? 'url(' + vistaPrevia + ')' : null">
+        @if (!vistaPrevia) { <span>📷</span> }
+      </div>
+      <input type="file" accept="image/*" (change)="onFoto($event)" />
+    </label>
+    <small class="hint">Foto del grupo (opcional)</small>
+
+    <input
+      class="cl-campo"
+      type="text"
+      name="nombre"
+      placeholder="Nombre del grupo"
+      [(ngModel)]="nombreGrupo"
+      required
+    />
+
+    <b>Integrantes</b>
+
+    <div class="contactos">
+      @for (contacto of contactos(); track contacto.idUsuarioContacto) {
+        <label class="ck">
+          <input
+            type="checkbox"
+            [checked]="seleccionados.includes(contacto.idUsuarioContacto)"
+            (change)="alternarSeleccion(
+              contacto.idUsuarioContacto,
+              $any($event.target).checked
+            )"
+          />
+
+          @if (contacto.urlFotoPerfil) {
+            <img
+              class="av sm"
+              [src]="contacto.urlFotoPerfil"
+              [alt]="contacto.nombrePersonalizado || contacto.telefono"
+            />
+          } @else {
+            <div class="av sm rosa">
+              {{ (contacto.nombrePersonalizado || contacto.telefono).charAt(0).toUpperCase() }}
+            </div>
+          }
+
+          {{ contacto.nombrePersonalizado || contacto.telefono }}
+        </label>
+      } @empty {
+        <p>No tienes contactos agregados.</p>
+      }
+    </div>
+
+    <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+
+    <button type="submit" class="cl-btn rosa">
+      Crear grupo (serás admin)
+    </button>
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">
+      Cerrar
+    </button>
+  </form>
+</div>
+

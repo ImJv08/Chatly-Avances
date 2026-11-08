@@ -1,0 +1,36 @@
+<div class="cl-fondo" (click)="cerrar.emit()">
+  <div class="cl-caja" (click)="$event.stopPropagation()">
+    <h2>Bloqueados</h2>
+
+    @if (cargando) {
+      <p class="vacio">Cargando...</p>
+    }
+
+    @for (b of bloqueados; track b.idUsuarioBloqueado; let i = $index) {
+      <div class="item">
+        @if (b.fotoPerfilUrlBloqueado) {
+          <img class="av" [src]="b.fotoPerfilUrlBloqueado" [alt]="nombreDe(b)" />
+        } @else {
+          <div class="av" [ngClass]="['rosa', 'amarillo', 'azul'][i % 3]">
+            {{ inicialDe(b) }}
+          </div>
+        }
+        <div class="m">
+          <b>{{ nombreDe(b) }}</b>
+          <small>{{ b.numeroTelefonicoBloqueado }}</small>
+        </div>
+        <button type="button" class="cl-btn verde chico" (click)="desbloquear(b)">
+          Desbloquear
+        </button>
+      </div>
+    }
+
+    @if (!cargando && bloqueados.length === 0) {
+      <p class="vacio">No tienes contactos bloqueados.</p>
+    }
+
+    <div class="cl-err" [style.color]="messageType === 'success' ? '#7dffa1' : null">{{ message }}</div>
+
+    <button type="button" class="cl-lnk" (click)="cerrar.emit()">Cerrar</button>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="app">
+  <nav class="rail">
+    <div class="lg">C!</div>
+
+    <a class="nv" routerLink="chats" routerLinkActive="on">
+      <span class="ico">💬</span>Chats
+      <em class="bd">2</em>
+    </a>
+    <a class="nv" routerLink="estados" routerLinkActive="on">
+      <span class="ico">✨</span>Estados
+    </a>
+    <a class="nv" routerLink="notificaciones" routerLinkActive="on">
+      <span class="ico">🔔</span>Notificaciones
+    </a>
+
+    <button type="button" class="nv" (click)="modal = 'perfil'">
+      @if (usuario?.fotoPerfilUrl) {
+        <img class="av sm" [src]="usuario!.fotoPerfilUrl" alt="Perfil" />
+      } @else {
+        <div class="av sm naranja">{{ iniciales }}</div>
+      }
+      Perfil
+    </button>
+    <button type="button" class="nv" (click)="salir()">
+      <span class="ico" >🚪</span>Salir
+    </button>
+  </nav>
+
+  <main class="contenido">
+    <router-outlet />
+  </main>
+</div>
+
+@if (modal === 'perfil') {
+  <app-perfil (cerrar)="modal = null" />
+}
+
+@if (modal === 'perfil') {
+  <app-perfil (cerrar)="modal = null" (actualizado)="cargarUsuario()" />
+}

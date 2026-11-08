@@ -1,0 +1,255 @@
+<aside class="panel">
+  <div class="ph">
+    <h2>Chats</h2>
+    <button class="btn azul" (click)="modal = 'contacto'">+ Nuevo</button>
+    <button class="btn rosa" (click)="modal = 'grupo'">+ Grupo</button>
+    <button class="btn" (click)="verBloqueados = true">🚫 Bloqueados</button>
+    <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+    <small class="cuenta">Cuenta: {{ nombreUsuario }}</small>
+    <input type="text" placeholder="🔍 Buscar chat por nombre…" />
+  </div>
+
+  <div class="list">
+    @for (contacto of contactos(); track contacto.idUsuarioContacto; let i = $index) {
+      <div class="chat-card">
+
+        @if (contacto.urlFotoPerfil) {
+          <img
+            class="av"
+            [src]="contacto.urlFotoPerfil"
+            [alt]="contacto.nombrePersonalizado || contacto.telefono"
+          />
+        } @else {
+          <div class="av" [ngClass]="['rosa', 'amarillo', 'azul'][i % 3]">
+            {{ (contacto.nombrePersonalizado || contacto.telefono).charAt(0).toUpperCase() }}
+          </div>
+        }
+
+        <div class="m">
+          <b>{{ contacto.nombrePersonalizado || contacto.telefono }}</b>
+          <small>{{ estaBloqueado(contacto) ? '🚫 Bloqueado' : '' }}</small>
+        </div>
+        <div class="menu-container">
+          <button class="btn-menu" (click)="toggleMenu('contacto-' + contacto.idUsuarioContacto, $event)">
+            ▼
+          </button>
+
+          @if (menuAbierto === 'contacto-' + contacto.idUsuarioContacto) {
+            <div class="menu-opciones">
+              <button (click)="abrirActualizarContacto(contacto)">
+                Actualizar
+              </button>
+              @if (estaBloqueado(contacto)) {
+                <button (click)="desbloquearContacto(contacto)">Desbloquear</button>
+              } @else {
+                <button (click)="confirmarBloquear(contacto)">Bloquear</button>
+              }
+              <button (click)="confirmarEliminarContacto(contacto)">Eliminar</button>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+    @for (grupo of grupos(); track grupo.id) {
+      <div class="chat-card">
+
+        <div class="av azul">
+          {{ (grupo.nombreGrupo || grupo.nombre || 'G').charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="m">
+          <b>{{ grupo.nombreGrupo || grupo.nombre }}</b>
+          <small>Grupo</small>
+        </div>
+        <div class="menu-container">
+          <button class="btn-menu" (click)="toggleMenu('grupo-' + grupo.id, $event)">
+            ▼
+          </button>
+
+          @if (menuAbierto === 'grupo-' + grupo.id) {
+            <div class="menu-opciones">
+              <button (click)="abrirActualizarGrupo(grupo)">
+                Actualizar
+              </button>
+              <button (click)="confirmarSalirGrupo(grupo)">
+                Salir del grupo
+              </button>
+              @if (grupo.rol === 'ADMIN') {
+                <button (click)="confirmarEliminarGrupo(grupo)">
+                  Eliminar grupo
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+</aside>
+
+<section class="main">
+  <div class="empty">
+    <h1>Chatly!</h1>
+    <p>Elige un chat o crea uno nuevo</p>
+  </div>
+</section>
+
+@if (verBloqueados) {
+  <app-bloqueados (cerrar)="cerrarBloqueados()" />
+}
+
+@if (modal === 'contacto') {
+  <app-nuevo-contacto
+    (contactoCreado)="listarContactos(idUsuario)"
+    (cerrar)="modal = null"
+  />
+}
+@if (modal === 'grupo') { <app-nuevo-grupo (grupoCreado)= "listarGrupos(idUsuario)"
+                                           (cerrar)= "modal = null" /> }
+
+@if (mostrarConfirmacionBloqueo && contactoParaBloquear) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Bloquear contacto</h3>
+
+      <p>
+        ¿Quieres bloquear a
+        <strong>
+          {{ contactoParaBloquear.nombrePersonalizado || contactoParaBloquear.telefono }}
+        </strong>?
+        No podrás agregarle a grupos ni el usuario a ti, además, no verán los estados del otro. Puedes
+        desbloquearlo desde el menú del contacto o desde "🚫 Bloqueados".
+      </p>
+
+      <button (click)="cancelarBloquear()">
+        Cancelar
+      </button>
+
+      <button (click)="bloquearContactoSeleccionado()">
+        Sí, bloquear
+      </button>
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacion && contactoSeleccionado) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Eliminar contacto</h3>
+
+      <p>
+        ¿Estás segura de que quieres eliminar a
+        <strong>
+          {{ contactoSeleccionado.nombrePersonalizado
+        || contactoSeleccionado.telefono }}
+        </strong>?
+      </p>
+
+      <button (click)="cancelarEliminarContacto()">
+        Cancelar
+      </button>
+
+      <button
+        (click)="eliminarContactoSeleccionado()">
+        Sí, eliminar
+      </button>
+    </div>
+  </div>
+}
+@if (mostrarConfirmacionGrupo && grupoSeleccionado) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Eliminar grupo</h3>
+
+      <p>
+        ¿Estás segura de que quieres eliminar el grupo
+        <strong>{{ grupoSeleccionado.nombreGrupo || grupoSeleccionado.nombre }}</strong>?
+      </p>
+
+      <button (click)="cancelarEliminarGrupo()">
+        Cancelar
+      </button>
+
+      <button (click)="eliminarGrupoSeleccionado()">
+        Sí, eliminar
+      </button>
+    </div>
+  </div>
+}
+
+@if (mostrarActualizarGrupo && grupoSeleccionado) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Actualizar grupo</h3>
+
+      <label for="nombreGrupo">Nombre del grupo</label>
+      <input
+        id="nombreGrupo"
+        type="text"
+        [(ngModel)]="nombreGrupoEditar"
+        placeholder="Nombre del grupo"
+      />
+
+      <label for="fotoGrupo">Foto del grupo</label>
+      <input
+        id="fotoGrupo"
+        type="file"
+        accept="image/*"
+        (change)="seleccionarFotoGrupo($event)"
+      />
+
+      <div>
+        <button (click)="cancelarActualizarGrupo()">
+          Cancelar
+        </button>
+
+        <button (click)="guardarCambiosGrupo()">
+          Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+
+}
+
+@if (mostrarConfirmacionSalir && grupoParaSalir) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <p>
+        ¿Estás segura de que quieres salir del grupo
+        <strong>{{ grupoParaSalir.nombre }}</strong>?
+      </p>
+
+  <button (click)="cancelarSalirGrupo()">Cancelar</button><button (click)="salirDelGrupo()">Sí, salir</button>
+    </div>
+  </div>
+}
+
+@if (mostrarActualizarContacto && contactoSeleccionado) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Actualizar contacto</h3>
+
+      <label for="nombrePersonalizado">Nombre personalizado</label>
+      <input
+        id="nombrePersonalizado"
+        type="text"
+        [(ngModel)]="nombreContactoEditar"
+        placeholder="Nombre del contacto"
+        maxlength="100"
+      />
+
+      <div>
+        <button (click)="cancelarActualizarContacto()">
+          Cancelar
+        </button>
+
+        <button (click)="guardarCambiosContacto()">
+          Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+}

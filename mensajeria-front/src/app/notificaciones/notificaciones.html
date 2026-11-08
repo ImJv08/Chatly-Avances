@@ -1,0 +1,20 @@
+<section class="pagina">
+  <h2>Avisos</h2>
+
+  <div *ngFor="let aviso of notificaciones"
+       class="aviso"
+       [class.nuevo]="!aviso.leido">
+
+    <span class="ico">🔔</span>
+
+    <div>
+      <b>{{ obtenerMensaje(aviso) }}</b>
+      <small>{{ aviso.fecha | date:'short' }}</small>
+    </div>
+
+  </div>
+
+  <p *ngIf="notificaciones.length === 0">
+    No tienes notificaciones.
+  </p>
+</section>
