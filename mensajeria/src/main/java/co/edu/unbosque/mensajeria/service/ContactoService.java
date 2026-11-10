@@ -46,4 +46,8 @@ public class ContactoService {
 
 	    System.out.println("Nombre actualizado correctamente");
 	}
+	
+	public List<ContactoRespuestaDTO> buscarContactosPorNombreOTelefono(Long idUsuario, String texto) {
+	    return contactoRepository.buscarContactosPorUsuario(idUsuario, texto);
+	}
 }

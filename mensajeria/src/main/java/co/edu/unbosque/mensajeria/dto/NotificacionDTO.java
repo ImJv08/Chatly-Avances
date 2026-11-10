@@ -5,9 +5,9 @@ import java.util.Date;
 public class NotificacionDTO {
 
 	 private Long id;
-	 private Long idUsuario;
-	 private Long idUsuarioOrigen;
-	 private boolean leido;
+	 private Long usuario;
+	 private Long usuarioOrigen;
+	 private boolean fueLeido;
 	 private String tipo;
 	 private Date fecha;
 	 
@@ -18,9 +18,9 @@ public class NotificacionDTO {
 	 public NotificacionDTO(Long id, Long idUsuario, Long idUsuarioOrigen, boolean leido, String tipo, Date fecha) {
 		super();
 		this.id = id;
-		this.idUsuario = idUsuario;
-		this.idUsuarioOrigen = idUsuarioOrigen;
-		this.leido = leido;
+		this.usuario = idUsuario;
+		this.usuarioOrigen = idUsuarioOrigen;
+		this.fueLeido = leido;
 		this.tipo = tipo;
 		this.fecha = fecha;
 	 }
@@ -34,27 +34,27 @@ public class NotificacionDTO {
 	 }
 
 	 public Long getIdUsuario() {
-		 return idUsuario;
+		 return usuario;
 	 }
 
 	 public void setIdUsuario(Long idUsuario) {
-		 this.idUsuario = idUsuario;
+		 this.usuario = idUsuario;
 	 }
 
 	 public Long getIdUsuarioOrigen() {
-		 return idUsuarioOrigen;
+		 return usuarioOrigen;
 	 }
 
 	 public void setIdUsuarioOrigen(Long idUsuarioOrigen) {
-		 this.idUsuarioOrigen = idUsuarioOrigen;
+		 this.usuarioOrigen = idUsuarioOrigen;
 	 }
 
 	 public boolean isLeido() {
-		 return leido;
+		 return fueLeido;
 	 }
 
 	 public void setLeido(boolean leido) {
-		 this.leido = leido;
+		 this.fueLeido = leido;
 	 }
 
 	 public String getTipo() {

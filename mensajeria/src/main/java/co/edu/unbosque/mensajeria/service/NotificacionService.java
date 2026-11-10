@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.mensajeria.dto.NotificacionDTO;
 import co.edu.unbosque.mensajeria.repository.NotificacionRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class NotificacionService {
@@ -20,23 +21,37 @@ public class NotificacionService {
 	}
 	
 
-public List<NotificacionDTO> listarNotificaciones(Long idUsuario) {
-
-    return notificacionRepository.listarNotificaciones(idUsuario)
-        .stream()
-        .map(n -> new NotificacionDTO(
-            ((Number) n[0]).longValue(),
-            ((Number) n[1]).longValue(),
-            ((Number) n[2]).longValue(),
-            (Boolean) n[3],
-            (String) n[4],
-            Date.from(
-                ((LocalDateTime) n[5])
-                    .atZone(ZoneId.systemDefault())
-                    .toInstant()
-            )
-        ))
-        .toList();
-}
-
+	public List<NotificacionDTO> listarNotificaciones(Long idUsuario) {
+		
+	    return notificacionRepository.listarNotificaciones(idUsuario)
+	        .stream()
+	        .map(n -> new NotificacionDTO(
+	            ((Number) n[0]).longValue(),
+	            ((Number) n[1]).longValue(),
+	            ((Number) n[2]).longValue(),
+	            (Boolean) n[3],
+	            (String) n[4],
+	            Date.from(
+	                ((LocalDateTime) n[5])
+	                    .atZone(ZoneId.systemDefault())
+	                    .toInstant()
+	            )
+	        ))
+	        .toList();
+	}
+	
+	@Transactional
+	public void marcarLeida(Long id) {
+	    notificacionRepository.marcarLeida(id);
+	}
+	
+	public Long contarNoLeidas(Long idUsuario) {
+	    Number n = notificacionRepository.contarNoLeidas(idUsuario);
+	    return n == null ? 0L : n.longValue();
+	}
+	
+	@Transactional
+	public void marcarTodasLeidas(Long idUsuario) {
+	    notificacionRepository.marcarTodasLeidas(idUsuario);
+	}
 }

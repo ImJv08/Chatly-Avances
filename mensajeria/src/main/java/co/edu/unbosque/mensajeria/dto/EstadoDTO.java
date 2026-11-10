@@ -10,13 +10,12 @@ import co.edu.unbosque.mensajeria.entity.Usuario;
 
 public class EstadoDTO {
 	
-	private Long id;
-
-	
+	private Long id;	
 	private Long idUsuario;
-	private String tipo; //si es imagen,video
-    private String contenidoUrl; // url si es imagen o video
+	private String tipo; 
+    private String contenidoUrl; 
     private String descripcion;
+    private String nombreUsuario;
 	private Date fechaPublicacion;
 	private Date fechaExpiracion;
 
@@ -26,7 +25,7 @@ public class EstadoDTO {
 
 
 	public EstadoDTO(Long id, Long idUsuario, String tipo, String contenidoUrl, String descripcion,
-			Date fechaPublicacion, Date fechaExpiracion) {
+			String nombreUsuario, Date fechaPublicacion, Date fechaExpiracion) {
 		super();
 		this.id = id;
 		this.idUsuario = idUsuario;
@@ -35,7 +34,20 @@ public class EstadoDTO {
 		this.descripcion = descripcion;
 		this.fechaPublicacion = fechaPublicacion;
 		this.fechaExpiracion = fechaExpiracion;
+		this.nombreUsuario = nombreUsuario;
 	}
+	
+	
+
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
+
+
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
+
 
 	public Long getId() {
 		return id;

@@ -32,6 +32,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	@Query(value = "SELECT * FROM public.fn_buscar_por_numero(:numero)", nativeQuery = true)
 	public Optional<Usuario> buscarPorNumero(@Param("numero") String numero);
 	
-     
+	@Query(value = "SELECT public.fn_hay_bloqueo(:a, :b)", nativeQuery = true)
+	boolean hayBloqueo(@Param("a") Long a, @Param("b") Long b);
 	
 }
