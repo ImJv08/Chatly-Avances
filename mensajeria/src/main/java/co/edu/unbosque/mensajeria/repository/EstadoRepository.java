@@ -21,5 +21,5 @@ public interface EstadoRepository extends JpaRepository<Estado, Long> {
 	public void eliminarEstado(@Param("P_ID_ESTADO") Long idEstado);
 
 	@Query(value = "SELECT * FROM FN_LISTAR_ESTADOS_CONTACTOS(:idUsuario)", nativeQuery = true)
-	public List<Estado> listarEstadosPorContactos(@Param("idUsuario") Long idUsuario);
+	List<Object[]> listarEstadosPorContactos(@Param("idUsuario") Long idUsuario);
 }

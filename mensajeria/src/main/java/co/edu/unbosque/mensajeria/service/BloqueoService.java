@@ -38,6 +38,7 @@ public class BloqueoService {
 		usuarioService.validarUsuarioAutenticado(idUsuario);
 		return bloqueoRepository.listarBloqueosPorUsuario(idUsuario).stream().map(this::convertirADTO).toList();
 	}
+	
 
 	private BloqueoDTO convertirADTO(Bloqueo b) {
 		Usuario bloqueado = b.getUsuarioBloqueado();

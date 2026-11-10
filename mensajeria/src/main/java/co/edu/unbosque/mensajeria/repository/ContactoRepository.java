@@ -27,4 +27,7 @@ public interface ContactoRepository extends JpaRepository<Contacto, Long> {
 	
 	@Query(value = "SELECT * FROM FN_OBTENER_ID_CONTACTO(:idUsuario, :idUsuarioContacto)", nativeQuery = true)
 	Long obtenerIdContacto(@Param("idUsuario") Long idUsuario, @Param("idUsuarioContacto") Long idUsuarioContacto);
+	
+	@Query(value = "SELECT * FROM FN_BUSCAR_CONTACTOS_USUARIO(:idUsuario, :texto)", nativeQuery = true)
+	List<ContactoRespuestaDTO> buscarContactosPorUsuario(@Param("idUsuario") Long idUsuario, @Param("texto") String texto);
 }

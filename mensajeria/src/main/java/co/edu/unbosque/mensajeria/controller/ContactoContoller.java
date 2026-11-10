@@ -50,6 +50,14 @@ public class ContactoContoller {
 	    return ResponseEntity.ok(contactoService.listarContactosPorUsuario(idUsuario));
 	}
 	
+	@GetMapping("/buscarPorNombreOTelefono/{idUsuario}")
+	public ResponseEntity<List<ContactoRespuestaDTO>> buscarContactosPorNombreOTelefono(@PathVariable Long idUsuario, @RequestParam String texto) {
+
+	    return ResponseEntity.ok(
+	        contactoService.buscarContactosPorNombreOTelefono(idUsuario, texto)
+	    );
+	}
+	
 	@PutMapping("/actualizarNombre/{idUsuario}/{idUsuarioContacto}")
 	public ResponseEntity<?> actualizarNombre(@PathVariable Long idUsuario,@PathVariable Long idUsuarioContacto, @RequestParam String nombre) {
 

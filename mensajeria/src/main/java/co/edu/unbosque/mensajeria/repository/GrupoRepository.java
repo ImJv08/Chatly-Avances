@@ -40,4 +40,13 @@ public interface GrupoRepository extends JpaRepository<Grupo, Long> {
 
 	@Query(value = "SELECT * FROM fn_listar_grupos_usuario_rol(:idUsuario)", nativeQuery = true)
 	List<Object[]> listarGruposConRolPorUsuario(@Param("idUsuario") Long idUsuario);
+	
+	@Query(value = "SELECT * FROM FN_LISTAR_MIEMBROS_GRUPO(:idGrupo)", nativeQuery = true)
+	List<Object[]> listarMiembrosGrupo(@Param("idGrupo") Long idGrupo);
+	
+	@Procedure(procedureName = "sp_cambiar_rol_admin")
+	void cambiarRolAdmin(@Param("p_id_grupo") Long idGrupo, @Param("p_id_usuario") Long idUsuario, @Param("p_id_origen") Long idOrigen);
+	
+	@Query(value = "SELECT * FROM fn_es_miembro_grupo(:g, :u)", nativeQuery = true)
+	boolean esMiembro(@Param("g") Long idGrupo, @Param("u") Long idUsuario);
 }

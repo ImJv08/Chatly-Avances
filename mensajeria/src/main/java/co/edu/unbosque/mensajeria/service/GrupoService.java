@@ -1,36 +1,81 @@
 package co.edu.unbosque.mensajeria.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.unbosque.mensajeria.dto.GrupoDTO;
 import co.edu.unbosque.mensajeria.dto.MiembroGrupoDTO;
+import co.edu.unbosque.mensajeria.repository.BloqueoRepository;
 import co.edu.unbosque.mensajeria.repository.GrupoRepository;
 import jakarta.transaction.Transactional;
 import co.edu.unbosque.mensajeria.entity.Grupo;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 @Service
 public class GrupoService {
 
 	private final GrupoRepository grupoRepository;
+	private final BloqueoRepository bloqueoRepository;
+	
+	@Value("${app.base-url}")
+	private String baseUrl;
 
-	public GrupoService(GrupoRepository grupoRepository) {
+	public GrupoService(GrupoRepository grupoRepository, BloqueoRepository bloqueoRepository) {
 		this.grupoRepository = grupoRepository;
+		this.bloqueoRepository = bloqueoRepository;
 	}
 
 	@Transactional
-	public void crearGrupo(GrupoDTO grupoDTO) {
+	public int crearGrupo(GrupoDTO dto, MultipartFile foto) {
+		if (dto.getNombreGrupo() == null || dto.getNombreGrupo().trim().isEmpty()) {
+			return 2;
+		}
+		if (foto != null && !foto.isEmpty()) {
+			String tipo = foto.getContentType();
+			if (tipo == null || !tipo.startsWith("image/") || foto.getSize() > 5 * 1024 * 1024) {
+				return 5;
+			}
+			dto.setFotoPerfilUrl(guardarFoto(foto));
+		}
+		grupoRepository.crearGrupo(dto.getIdCreador(), dto.getNombreGrupo().trim(), dto.getFotoPerfilUrl());
+		return 0;
+	}
 
-		grupoRepository.crearGrupo(grupoDTO.getIdCreador(), grupoDTO.getNombreGrupo(), grupoDTO.getFotoPerfilUrl());
+	private String guardarFoto(MultipartFile foto) {
+		try {
+			String ext = foto.getContentType().substring(foto.getContentType().indexOf('/') + 1);
+			String nombre = UUID.randomUUID() + "." + ext;
+			Path dir = Paths.get(System.getProperty("user.dir"), "uploads", "grupos");
+			Files.createDirectories(dir);
+			Files.copy(foto.getInputStream(), dir.resolve(nombre), StandardCopyOption.REPLACE_EXISTING);
+			return baseUrl + "/uploads/grupos/" + nombre;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
 	}
 
 	@Transactional
-	public void agregarMiembro(MiembroGrupoDTO grupoMiembroDTO, Long idOrigen) {
+	public boolean agregarMiembro(MiembroGrupoDTO grupoMiembroDTO, Long idOrigen) {
+
+		if (bloqueoRepository.estaBloqueado(grupoMiembroDTO.getUsuario(), idOrigen)) {
+			return false;
+		}
+
 		grupoRepository.agregarMiembro(grupoMiembroDTO.getGrupo(), grupoMiembroDTO.getUsuario(), idOrigen);
+		return true;
 	}
+	
 	
 	@Transactional
 	public void eliminarGrupo( Long idGrupo, Long idCreador) {
@@ -39,8 +84,21 @@ public class GrupoService {
 	
 	
 	@Transactional
-	public void actualizarGrupo( GrupoDTO grupoDTO, Long idCreador) {
-		grupoRepository.actualizarGrupo(grupoDTO.getId(),idCreador, grupoDTO.getNombreGrupo(), grupoDTO.getFotoPerfilUrl()  );
+	public int actualizarGrupo( GrupoDTO grupoDTO, Long idCreador, MultipartFile foto) {
+		if(grupoDTO.getNombreGrupo() == null || grupoDTO.getNombreGrupo().trim().isEmpty()) {
+			return 2;
+		}
+		
+		if(foto != null && !foto.isEmpty()) {
+			if(foto.getContentType() == null || !foto.getContentType().startsWith("image/")
+					|| foto.getSize() > 5 * 1024 * 1024){
+				return 5;
+			}
+			grupoDTO.setFotoPerfilUrl(guardarFoto(foto));
+		}
+		grupoRepository.actualizarGrupo(grupoDTO.getId(),idCreador, grupoDTO.getNombreGrupo(), 
+				grupoDTO.getFotoPerfilUrl());
+		return 0;
 	}
 	
 	@Transactional
@@ -78,6 +136,32 @@ public class GrupoService {
 	    }
 
 	    return grupos;
+	}
+	
+	@Transactional
+	public void cambiarRolAdmin(Long idGrupo, Long idUsuario, Long idOrigen) {
+	    grupoRepository.cambiarRolAdmin(idGrupo, idUsuario, idOrigen);
+	}
+	
+	public List<Map<String, Object>> listarMiembrosGrupo(Long idGrupo) {
+
+	    List<Object[]> resultados = grupoRepository.listarMiembrosGrupo(idGrupo);
+
+	    List<Map<String, Object>> miembros = new ArrayList<>();
+
+	    for (Object[] fila : resultados) {
+	        Map<String, Object> miembro = new HashMap<>();
+
+	        miembro.put("idUsuario", fila[0]);
+	        miembro.put("nombreCompleto", fila[1] + " " + fila[2]);
+	        miembro.put("numeroTelefonico", fila[3]);
+	        miembro.put("fotoPerfilUrl", fila[4]);
+	        miembro.put("rol", fila[5]);
+
+	        miembros.add(miembro);
+	    }
+
+	    return miembros;
 	}
 
 }

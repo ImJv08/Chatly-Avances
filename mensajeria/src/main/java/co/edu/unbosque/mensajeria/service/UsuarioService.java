@@ -86,22 +86,22 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public int actualizarUsuario(UsuarioDTO d, MultipartFile foto) {
-		if (d.getId() == null || vacio(d.getNumeroTelefonico()) || vacio(d.getPrimerNombre())
-				|| vacio(d.getPrimerApellido())) {
+	public int actualizarUsuario(UsuarioDTO usuarioDTO, MultipartFile foto) {
+		if (usuarioDTO.getId() == null || vacio(usuarioDTO.getNumeroTelefonico()) || vacio(usuarioDTO.getPrimerNombre())
+				|| vacio(usuarioDTO.getPrimerApellido())) {
 			return 2;
 		}
 
 		String hash = null;
-		if (!vacio(d.getContrasenia())) {
-			if (!d.getContrasenia().matches("^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{7,}$")) {
+		if (!vacio(usuarioDTO.getContrasenia())) {
+			if (!usuarioDTO.getContrasenia().matches("^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{7,}$")) {
 				return 4;
 			}
-			hash = passwordEncoder.encode(d.getContrasenia());
+			hash = passwordEncoder.encode(usuarioDTO.getContrasenia());
 		}
 
-		boolean numeroDeOtro = usuarioRepository.buscarPorNumero(d.getNumeroTelefonico())
-				.filter(u -> !u.getId().equals(d.getId())).isPresent();
+		boolean numeroDeOtro = usuarioRepository.buscarPorNumero(usuarioDTO.getNumeroTelefonico())
+				.filter(u -> !u.getId().equals(usuarioDTO.getId())).isPresent();
 		if (numeroDeOtro) {
 			return 1;
 		}
@@ -111,11 +111,11 @@ public class UsuarioService {
 					|| foto.getSize() > 5 * 1024 * 1024) {
 				return 5; // imagen inválida
 			}
-			d.setFotoPerfilUrl(guardarFoto(foto));
+			usuarioDTO.setFotoPerfilUrl(guardarFoto(foto));
 		}
 
-		usuarioRepository.actualizarUsuario(d.getId(), d.getPrimerNombre(), d.getSegundoNombre(),
-				d.getPrimerApellido(), d.getSegundoApellido(), d.getNumeroTelefonico(), d.getFotoPerfilUrl(), hash);
+		usuarioRepository.actualizarUsuario(usuarioDTO.getId(), usuarioDTO.getPrimerNombre(), usuarioDTO.getSegundoNombre(),
+				usuarioDTO.getPrimerApellido(), usuarioDTO.getSegundoApellido(), usuarioDTO.getNumeroTelefonico(), usuarioDTO.getFotoPerfilUrl(), hash);
 		return 0;
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 import co.edu.unbosque.mensajeria.dto.GrupoDTO;
 import co.edu.unbosque.mensajeria.dto.MiembroGrupoDTO;
@@ -30,16 +34,31 @@ public class GrupoController {
 		this.grupoService = grupoService;
 	}
 
-	@PostMapping("/crearGrupo")
-	public ResponseEntity<?> crearGrupo(@RequestBody GrupoDTO grupoDTO) {
-	    grupoService.crearGrupo(grupoDTO);
-	    return ResponseEntity.status(HttpStatus.CREATED).build();
+	@PostMapping(value = "/crearGrupo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> crearGrupo(@RequestPart("grupo") GrupoDTO grupoDTO,
+			@RequestPart(value = "foto", required = false) MultipartFile foto) {
+		int r = grupoService.crearGrupo(grupoDTO, foto);
+		switch (r) {
+		case 0: 
+			return ResponseEntity.status(HttpStatus.CREATED).build();
+		case 2: 
+			return ResponseEntity.badRequest().body("El grupo necesita un nombre");
+		case 5: 
+			return ResponseEntity.badRequest().body("La imagen debe ser un archivo de imagen de máximo 5 MB");
+		default: 
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error desconocido");
+		}
 	}
 
 	@PostMapping("/agregarMiembros/{idOrigen}")
 	public ResponseEntity<?> agregarMiembro(@RequestBody MiembroGrupoDTO miembroGrupoDTO, @PathVariable Long idOrigen) {
 
-		grupoService.agregarMiembro(miembroGrupoDTO, idOrigen);
+		boolean agregado = grupoService.agregarMiembro(miembroGrupoDTO, idOrigen);
+
+		if (!agregado) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(Map.of("mensaje", "No se puede agregar a este usuario"));
+		}
 
 		return ResponseEntity.ok().build();
 	}
@@ -52,12 +71,21 @@ public class GrupoController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PutMapping("/actualizarGrupo/{idCreador}")
-	public ResponseEntity<?> actualizarGrupo(@RequestBody GrupoDTO grupoDTO, @PathVariable Long idCreador) {
+	@PutMapping(value = "/actualizarGrupo/{idCreador}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> actualizarGrupo(@RequestPart("grupo") GrupoDTO grupoDTO,
+			@PathVariable Long idCreador, @RequestPart(value = "foto", required = false) MultipartFile foto) {
 
-		grupoService.actualizarGrupo(grupoDTO, idCreador);
+		switch(grupoService.actualizarGrupo(grupoDTO, idCreador, foto)) {
+		case 0:
+			return ResponseEntity.ok("Grupo actualiazdo");
+		case 2:
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Debe ponerle un nombre al grupo");
+		case 5:
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La imageb debe ser un archivo de imagen de máximo 5 MB");
+		default:
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error desconocido");
+		}
 
-		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/salirGrupo")
@@ -91,6 +119,20 @@ public class GrupoController {
 	    return ResponseEntity.ok(
 	            grupoService.listarGruposConRol(idUsuario)
 	    );
+	}
+	
+	@GetMapping("/{idGrupo}/miembros")
+	public ResponseEntity<List<Map<String, Object>>> listarMiembrosGrupo(@PathVariable Long idGrupo) {
+
+	    return ResponseEntity.ok(grupoService.listarMiembrosGrupo(idGrupo));
+	}
+	
+	@PutMapping("/cambiarRolAdmin/{idOrigen}")
+	public ResponseEntity<?> cambiarRolAdmin(@RequestBody MiembroGrupoDTO miembroGrupoDTO,  @PathVariable Long idOrigen) {
+
+	    grupoService.cambiarRolAdmin(miembroGrupoDTO.getGrupo(), miembroGrupoDTO.getUsuario(), idOrigen);
+
+	    return ResponseEntity.ok().build();
 	}
 	
 }

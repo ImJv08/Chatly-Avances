@@ -23,4 +23,8 @@ public interface BloqueoRepository extends JpaRepository<Bloqueo, Long> {
 
 	@Query(value = "SELECT * FROM FN_LISTAR_BLOQUEOS_USUARIO(:idUsuario)", nativeQuery = true)
 	public List<Bloqueo> listarBloqueosPorUsuario(@Param("idUsuario") Long idUsuario);
+	
+	@Query(value = "SELECT * FROM FN_ESTA_BLOQUEADO(:idBloqueador, :idBloqueado)", nativeQuery = true)
+	public boolean estaBloqueado(@Param("idBloqueador") Long idBloqueador,
+	        @Param("idBloqueado") Long idBloqueado);
 }
