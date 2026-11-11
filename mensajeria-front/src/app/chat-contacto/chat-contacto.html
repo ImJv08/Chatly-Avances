@@ -1,0 +1,169 @@
+<div class="cl-cab">
+  <button type="button" class="cl-btn chico cl-atras" (click)="volver.emit()">←</button>
+
+  @if (contacto.urlFotoPerfil) {
+    <img
+      class="av rosa"
+      [src]="contacto.urlFotoPerfil"
+      [alt]="contacto.nombrePersonalizado || contacto.telefono"
+    />
+  } @else {
+    <div class="av rosa">
+      {{ (contacto.nombrePersonalizado || contacto.telefono).charAt(0).toUpperCase() }}
+    </div>
+  }
+
+  <div class="tit">
+    <b>{{ contacto.nombrePersonalizado || contacto.telefono }}</b>
+    <small>{{ contacto.telefono }}</small>
+  </div>
+
+  <button type="button" class="cl-btn chico" (click)="editando = true">Editar</button>
+</div>
+
+<div class="cl-msgs" #contenedor>
+  @for (m of mensajes; track m.id) {
+    <div class="cl-msg" [class.yo]="m.idEmisor === idUsuario">
+      <i>{{ m.idEmisor === idUsuario ? 'Tú' : (contacto.nombrePersonalizado || contacto.telefono) }}
+        · {{ m.fecha | date:'shortTime' }}</i>
+
+      @switch (m.tipo) {
+        @case ('IMAGEN') { <img [src]="m.contenidoUrl" class="img-msg"> }
+        @case ('ARCHIVO') {
+          <a href="#" (click)="$event.preventDefault(); descargar(m)">📄 {{ m.nombreArchivo }}</a>
+        }
+        @default { <p>{{ m.texto }}</p> }
+      }
+      @if (m.idEmisor === idUsuario) {
+        <button type="button" class="msg-menu-btn" (click)="toggleMenuMensaje(m.id, $event)">⋮</button>
+
+        @if (menuMensajeId === m.id) {
+          <div class="msg-menu">
+            <button type="button" (click)="borrar(m)">Eliminar</button>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  @if (visto) {
+    <div class="cl-visto">👀 VISTO</div>
+  }
+</div>
+
+@if (error) { <p class="cl-error">{{ error }}</p> }
+
+<form class="cl-envio" (ngSubmit)="onEnviar()">
+  <button type="button" class="cl-btn chico" title="Enviar imagen" (click)="inputImagen.click()">📷</button>
+  <input #inputImagen type="file" accept="image/*" hidden (change)="onImagen($event)" />
+  <button type="button" class="cl-btn chico" title="Enviar archivo" (click)="inputArchivo.click()">📎</button>
+  <input #inputArchivo type="file"
+         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
+         hidden (change)="onImagen($event)" />
+  <input class="cl-campo" type="text" name="mensaje" [(ngModel)]="texto" placeholder="Escribe algo…" />
+  <button type="submit" class="cl-btn">Enviar</button>
+</form>
+
+<!--editar contacto -->
+@if (editando) {
+  <div class="cl-fondo" (click)="editando = false">
+    <form class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>Contacto</h2>
+
+      <p>Número: <b>{{ contacto.telefono }}</b></p>
+
+      <input
+        class="cl-campo"
+        type="text"
+        name="nombre"
+        [value]="nombreContactoEditar || contacto.nombrePersonalizado || ''"
+        (input)="nombreContactoEditar = $any($event.target).value"
+        placeholder="Nombre del contacto"
+      />
+
+      @if (message) {
+        <p [class]="messageType">{{ message }}</p>
+      }
+
+      <button
+        type="button"
+        class="cl-btn verde"
+        (click)="actualizarContacto(contacto.idUsuarioContacto, nombreContactoEditar || contacto.nombrePersonalizado || '')">
+        Guardar nombre
+      </button>
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="confirmarEliminarContacto(contacto)">
+        Eliminar
+      </button>
+
+      <button type="button" class="cl-btn rosa chico" (click)="confirmarBloquear(contacto)">Bloquear</button>
+
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="editando = false">
+        Cerrar
+      </button>
+    </form>
+  </div>
+}
+
+@if (mostrarConfirmacion) {
+  <div class="cl-fondo" (click)="cancelarEliminarContacto()">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>Eliminar contacto</h2>
+
+      <p>¿Estás seguro de que deseas eliminar este contacto?</p>
+
+      @if (message) {
+        <p [class]="messageType">
+          {{ message }}
+        </p>
+      }
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="eliminarContacto(idUsuario, contactoSeleccionado.idUsuarioContacto)">
+        Sí, eliminar
+      </button>
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="cancelarEliminarContacto()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacionBloqueo && contactoParaBloquear) {
+  <div class="fondo-dialogo">
+    <div class="dialogo">
+      <h3>Bloquear contacto</h3>
+
+      <p>
+        ¿Quieres bloquear a
+        <strong>
+          {{ contactoParaBloquear.nombrePersonalizado || contactoParaBloquear.telefono }}
+        </strong>?
+        No podrás agregarle a grupos ni el usuario a ti, además, no verán los estados del otro. Puedes
+        desbloquearlo desde el menú del contacto o desde "🚫 Bloqueados".
+      </p>
+
+      <button (click)="cancelarBloquear()">
+        Cancelar
+      </button>
+
+      <button (click)="bloquearContactoSeleccionado()">
+        Sí, bloquear
+      </button>
+    </div>
+  </div>
+}
+

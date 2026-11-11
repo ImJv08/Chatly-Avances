@@ -1,0 +1,35 @@
+/*Mensaje*/
+.alert {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.success { background: #28a745; }
+.error { background: #dc3545; }
+
+.err.ok { color: #7dffa1; }
+
+.err {
+  color: #ff5c8a;
+  font-weight: 700;
+  min-height: 18px;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

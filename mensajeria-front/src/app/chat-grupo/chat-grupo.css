@@ -1,0 +1,154 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  color: var(--ink);
+}
+
+/* ---------- Modal de info ---------- */
+.foto {
+  position: relative;
+  align-self: center;
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+}
+.foto input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.hint {
+  text-align: center;
+  opacity: 0.8;
+}
+
+.rol {
+  font-weight: 800;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 4px 8px;
+}
+
+.fila .nom {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 900;
+  border: 2px solid var(--ink);
+  padding: 1px 5px;
+  background: var(--pink);
+  color: var(--on);
+  margin-left: 4px;
+}
+
+.eliminar {
+  background: var(--orange);
+}
+/* Listar miembros */
+
+.lista-miembros {
+  margin-top: 20px;
+}
+
+.miembro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.miembro img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.miembro p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.miembro small {
+  color: #777;
+}
+
+.info-miembro {
+  flex: 1;
+}
+
+.acciones-miembro {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-eliminar,
+.btn-admin {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 7px;
+  cursor: pointer;
+  font-size: 10px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--ink);
+  color: #000;
+}
+
+.btn-eliminar {
+  background: var(--pink);
+}
+
+.btn-admin {
+  background: #90e0c5;
+}
+
+.btn-eliminar:active,
+.btn-admin:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.contactos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.ck {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ck input {
+  width: 20px;
+  height: 20px;
+}

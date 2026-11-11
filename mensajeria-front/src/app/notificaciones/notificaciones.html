@@ -1,0 +1,41 @@
+<section class="pagina">
+  <h2>Avisos</h2>
+
+  <div class="filtros">
+    <button type="button" class="btn s" (click)="pedirMarcarTodas()">Marcar todos como leído</button>
+    <button type="button" class="btn s" [class.activo]="filtro === 'todo'" (click)="filtro = 'todo'">Ver todo</button>
+    <button type="button" class="btn s" [class.activo]="filtro === 'no-leidas'" (click)="filtro = 'no-leidas'">Ver no leídos</button>
+    <button type="button" class="btn s" [class.activo]="filtro === 'leidas'" (click)="filtro = 'leidas'">Ver ya leídos</button>
+  </div>
+
+  <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+
+  @for (n of visibles; track n.id) {
+    <div class="aviso" [class.nuevo]="!n.leido">
+      <span class="ico">🔔</span>
+
+      <div class="texto">
+        <b>{{ obtenerMensaje(n) }}</b>
+        <small>{{ n.fecha | date:'short' }}</small>
+      </div>
+
+      <button type="button" class="btn s" [disabled]="n.leido" (click)="marcarLeida(n)">
+        {{ n.leido ? 'Leída' : 'Marcar como leída' }}
+      </button>
+    </div>
+  } @empty {
+    <p>No hay notificaciones para mostrar.</p>
+  }
+</section>
+
+@if (modalConfirmar) {
+  <div class="fondo-modal" (click)="modalConfirmar = false">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>¿Está seguro que quiere marcar todas como leídas?</h3>
+      <div class="acciones">
+        <button type="button" class="btn s si" (click)="confirmarMarcarTodas()">Sí</button>
+        <button type="button" class="btn s no" (click)="modalConfirmar = false">No</button>
+      </div>
+    </div>
+  </div>
+}
