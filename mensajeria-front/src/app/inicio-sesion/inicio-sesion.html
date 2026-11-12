@@ -1,0 +1,33 @@
+<div class="login">
+  <form (ngSubmit)="onLogin()" class="box">
+    <div class="logo">Chatly</div>
+    <b>El chat favorito de todos :D</b>
+    <input
+      type="tel"
+      name="telefono"
+      placeholder="Número de celular"
+      inputmode="tel"
+      [(ngModel)]="usuario.numeroTelefonico"
+    />
+
+    <div class="campo-password">
+      <input
+        [type]="verContrasenia ? 'text' : 'password'"
+        name="contrasenia"
+        placeholder="Contraseña"
+        [(ngModel)]="usuario.contrasenia"
+        autocomplete="current-password"
+      />
+      <button type="button" (click)="verContrasenia = !verContrasenia"
+              [attr.aria-label]="verContrasenia ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+        {{ verContrasenia ? '🙈' : '👁️' }}
+      </button>
+    </div>
+    <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+
+    <button type="submit" class="btn">Entrar</button>
+
+    <a class="lnk" routerLink="/registro">¿Sin cuenta? Créala</a>
+  </form>
+</div>
+

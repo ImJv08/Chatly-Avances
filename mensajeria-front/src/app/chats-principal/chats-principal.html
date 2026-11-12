@@ -1,0 +1,141 @@
+
+<aside class="panel">
+  <div class="ph">
+    <h2>Chats</h2>
+    <button class="btn azul" (click)="modal = 'contacto'">+ Nuevo</button>
+    <button class="btn rosa" (click)="modal = 'grupo'">+ Grupo</button>
+    <button class="btn" (click)="verBloqueados = true">🚫 Bloqueados</button>
+    <div class="err" [class.ok]="messageType === 'success'">{{ message }}</div>
+    <small class="cuenta">Cuenta: {{ nombreUsuario }}</small>
+    <input
+      type="text"
+      placeholder="Buscar chat por nombre o número de teléfono..."
+      [(ngModel)]="textoBusqueda"
+      (input)="buscarChats()"
+    />
+  </div>
+
+  <div class="list">
+    @if (cargando) {
+      <p class="vacio">Cargando...</p>
+    }
+    @for (contacto of contactosFiltrados(); track contacto.idUsuarioContacto; let i = $index) {
+      <div class="chat-card"
+           [class.activo]="contactoActivo()?.idUsuarioContacto === contacto.idUsuarioContacto"
+           (click)="abrirContacto(contacto)">
+
+        @if (contacto.urlFotoPerfil) {
+          <img
+            class="av"
+            [src]="contacto.urlFotoPerfil"
+            [alt]="contacto.nombrePersonalizado || contacto.telefono"
+          />
+        } @else {
+          <div class="av" [ngClass]="['rosa', 'amarillo', 'azul'][i % 3]">
+            {{ (contacto.nombrePersonalizado || contacto.telefono).charAt(0).toUpperCase() }}
+          </div>
+        }
+
+        <div class="m">
+          <b>{{ contacto.nombrePersonalizado || contacto.telefono }}</b>
+          <small></small>
+        </div>
+
+        @if (contactoActivo()?.idUsuarioContacto !== contacto.idUsuarioContacto
+        && noLeidos()[contacto.idUsuarioContacto]; as n) {
+          <span class="badge">{{ n }}</span>
+        }
+      </div>
+    }
+
+    @for (grupo of gruposFiltrados(); track grupo.id) {
+      <div class="chat-card"
+           [class.activo]="grupoActivo()?.id === grupo.id"
+           (click)="abrirGrupo(grupo)">
+
+        @if (grupo.fotoPerfilUrl) {
+          <img class="av" [src]="grupo.fotoPerfilUrl" [alt]="grupo.nombreGrupo || grupo.nombre" />
+        } @else {
+          <div class="av azul">
+            {{ (grupo.nombreGrupo || grupo.nombre || 'G').charAt(0).toUpperCase() }}
+          </div>
+        }
+
+        <div class="m">
+          <b>{{ grupo.nombreGrupo || grupo.nombre }}</b>
+          <small>Grupo</small>
+        </div>
+      </div>
+    }
+  </div>
+</aside>
+
+<section class="main" [class.abierto]="contactoActivo() || grupoActivo()">
+  @if (contactoActivo(); as c) {
+    <app-chat-contacto
+      [contacto]="c"
+      [mensajes]="mensajes()"
+      [idUsuario]="idUsuario"
+      [error]="error()"
+      (enviarMensaje)="enviar($event)"
+      (volver)="cerrarChat()"
+      (eliminarMensaje)="eliminarMensaje($event)"
+      (enviarArchivo)="enviarArchivo($event)"
+      (contactoEliminado)="listarContactos(idUsuario); cerrarChat()"
+      (contactoActualizado)="listarContactos(idUsuario)"
+    />
+  } @else {
+    @if (grupoActivo(); as g) {
+      <app-chat-grupo
+        [grupo]="g"
+        [mensajes]="mensajes()"
+        [idUsuario]="idUsuario"
+        [error]="error()"
+        [contactos]="contactos()"
+        (enviarMensaje)="enviar($event)"
+        (enviarArchivo)="enviarArchivo($event)"
+        (volver)="cerrarChat()"
+        (eliminarMensaje)="eliminarMensaje($event)"
+        (actualizado)="listarGruposConRol(idUsuario)"
+        (grupoEliminado)="listarGruposConRol(idUsuario); cerrarChat()"
+      />
+    } @else {
+      <div class="empty">
+        <h1>Chatly!</h1>
+        <p>Elige un chat o crea uno nuevo</p>
+      </div>
+    }
+  }
+</section>
+
+@if (verBloqueados) {
+  <app-bloqueados (cerrar)="cerrarBloqueados()" />
+}
+
+@if (modal === 'bloqueados') {
+  <app-bloqueados (cerrar)="modal = null" />
+}
+
+@if (modal === 'contacto') {
+  <app-nuevo-contacto
+    (contactoCreado)="listarContactos(idUsuario)"
+    (cerrar)="modal = null"
+  />
+}
+
+@if (modal === 'grupo') {
+  <app-nuevo-grupo
+    (grupoCreado)="listarGruposConRol(idUsuario); modal = null"
+    (cerrar)="modal = null"
+  />
+}
+@if (modal === 'grupo') {
+  <app-nuevo-grupo
+    (grupoCreado)="listarGruposConRol(idUsuario); modal = null"
+    (cerrar)="modal = null"
+  />
+}
+@if (aviso()) {
+  <div class="toast">{{ aviso() }}</div>
+}
+

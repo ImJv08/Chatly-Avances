@@ -1,0 +1,75 @@
+<section class="pagina">
+  <div class="cab">
+    <h2>Estados</h2>
+    <button type="button" class="btn" (click)="modal = 'estados'">+ Mi estado</button>
+    <button type="button" class="btn" (click)="abrirHistorial()">Historial</button>
+  </div>
+
+  <div class="cuadricula">
+    @for (e of estados(); track e.id) {
+      <div class="estado" (click)="estadoAbierto = e">
+        @if (e.tipo === 'IMAGEN') {
+          <img class="mini" [src]="e.contenidoUrl" alt="" />
+        } @else {
+          <video class="mini" [src]="e.contenidoUrl" muted preload="metadata"></video>
+        }
+        <span class="nombre">{{ e.idUsuario === idUsuario ? 'Tú' : e.nombreUsuario }}</span>
+        <small class="hora">{{ haceCuanto(e.fechaPublicacion) }}</small>
+      </div>
+    } @empty {
+      <p>No hay estados por ahora.</p>
+    }
+  </div>
+</section>
+
+@if (estadoAbierto) {
+  <div class="cl-fondo" (click)="estadoAbierto = null">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>{{ estadoAbierto.idUsuario === idUsuario ? 'Tú' : estadoAbierto.nombreUsuario }}</h2>
+      <small class="hora">{{ estadoAbierto.fechaPublicacion | date:'dd/MM/yyyy, h:mm a' }}</small>
+      @if (estadoAbierto.tipo === 'IMAGEN') {
+        <img [src]="estadoAbierto.contenidoUrl" alt="" style="max-width:100%" />
+      } @else {
+        <video [src]="estadoAbierto.contenidoUrl" controls autoplay style="max-width:100%"></video>
+      }
+      <p>{{ estadoAbierto.descripcion }}</p>
+      @if (estadoAbierto.idUsuario === idUsuario) {
+        <button type="button" class="cl-btn rosa chico" (click)="eliminar(estadoAbierto)">Eliminar</button>
+      }
+      <button type="button" class="cl-lnk" (click)="estadoAbierto = null">Cerrar</button>
+    </div>
+  </div>
+}
+
+@if (modal === 'estados') {
+  <app-nuevo-estado (cerrar)="modal = null" (publicado)="cargar()" />
+}
+
+@if (verHistorial) {
+  <div class="cl-fondo" (click)="verHistorial = false">
+    <div class="cl-caja caja-historial" (click)="$event.stopPropagation()">
+      <h2>Mi historial de estados</h2>
+
+      <div class="cuadricula lista-historial">
+        @for (h of historial; track h.id) {
+          <div class="estado">
+            @if (h.tipo === 'IMAGEN') {
+              <img class="mini" [src]="h.contenidoUrl" alt="" />
+            } @else {
+              <video class="mini" [src]="h.contenidoUrl" controls preload="metadata"></video>
+            }
+            <small class="hora">{{ h.fechaPublicacion | date:'dd/MM/yyyy, h:mm a' }}</small>
+            @if (h.descripcion) { <small>{{ h.descripcion }}</small> }
+            @if (h.fechaEliminacion) {
+              <small class="eliminado">Eliminado el {{ h.fechaEliminacion | date:'dd/MM/yyyy, h:mm a' }}</small>
+            }
+          </div>
+        } @empty {
+          <p>Aún no tienes estados en el historial.</p>
+        }
+      </div>
+
+      <button type="button" class="cl-lnk" (click)="verHistorial = false">Cerrar</button>
+    </div>
+  </div>
+}

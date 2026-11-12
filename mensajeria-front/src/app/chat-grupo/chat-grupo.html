@@ -1,0 +1,321 @@
+<div class="cl-cab">
+  <button type="button" class="cl-btn chico cl-atras" (click)="volver.emit()">←</button>
+
+  @if (grupo.fotoPerfilUrl) {
+    <img class="av amarillo" [src]="grupo.fotoPerfilUrl" [alt]="grupo.nombreGrupo || grupo.nombre" />
+  } @else {
+    <div class="av amarillo">
+      {{ (grupo.nombreGrupo || grupo.nombre || 'G').charAt(0).toUpperCase() }}
+    </div>
+  }
+
+  <div class="tit">
+    <b>{{ grupo.nombreGrupo || grupo.nombre }}</b>
+    <small>Tu rol: {{ grupo.rol }}</small>
+  </div>
+
+  <button type="button" class="cl-btn chico" (click)="abrirInfo()">Info</button>
+</div>
+
+<div class="cl-msgs">
+  @for (m of mensajes; track m.id) {
+    <div class="cl-msg" [class.yo]="m.idEmisor === idUsuario">
+      <i>{{ m.idEmisor === idUsuario ? 'Tú' : nombreEmisor(m.idEmisor) }}
+        · {{ m.fecha | date:'shortTime' }}</i>
+
+      @switch (m.tipo) {
+        @case ('IMAGEN') { <img [src]="m.contenidoUrl" class="img-msg"> }
+        @case ('ARCHIVO') {
+          <a href="#" (click)="$event.preventDefault(); descargar(m)">📄 {{ m.nombreArchivo }}</a>
+        }
+        @default { <p>{{ m.texto }}</p> }
+      }
+      @if (m.idEmisor === idUsuario) {
+        <button type="button" class="msg-menu-btn" (click)="toggleMenuMensaje(m.id, $event)">⋮</button>
+
+        @if (menuMensajeId === m.id) {
+          <div class="msg-menu">
+            <button type="button" (click)="borrar(m)">Eliminar</button>
+          </div>
+        }
+      }
+    </div>
+  }
+</div>
+
+@if (error) { <p class="cl-error">{{ error }}</p> }
+
+<form class="cl-envio" (ngSubmit)="onEnviar()">
+  <button type="button" class="cl-btn chico" title="Enviar imagen" (click)="inputImagen.click()">📷</button>
+  <input #inputImagen type="file" accept="image/*" hidden (change)="onImagen($event)" />
+  <button type="button" class="cl-btn chico" title="Enviar archivo" (click)="inputArchivo.click()">📎</button>
+  <input #inputArchivo type="file"
+         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip"
+         hidden (change)="onImagen($event)" />
+  <input class="cl-campo" type="text" name="mensaje" [(ngModel)]="texto" placeholder="Escribe algo…" />
+  <button type="submit" class="cl-btn">Enviar</button>
+</form>
+
+
+
+<!-- información del grupo -->
+@if (verInfo) {
+  <div class="cl-fondo" (click)="verInfo = false">
+    <form class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>Info del grupo</h2>
+      <label class="foto">
+        @if (vistaPreviaGrupo || grupo.fotoPerfilUrl) {
+          <img class="av lg amarillo" [src]="vistaPreviaGrupo || grupo.fotoPerfilUrl" alt="" />
+        } @else {
+          <div class="av lg amarillo">
+            {{ (grupo.nombreGrupo || grupo.nombre || 'G').charAt(0).toUpperCase() }}
+          </div>
+        }
+        @if (grupo.rol === 'ADMIN') {
+          <input type="file" accept="image/jpeg,image/png" (change)="onFotoGrupo($event)" />
+        }
+      </label>
+
+      @if (grupo.rol === 'ADMIN') {
+        <small class="hint">Toca el círculo para elegir foto</small>
+      }
+
+      <input
+        class="cl-campo"
+        type="text"
+        name="nombre"
+        [value]="grupo.nombreGrupo || grupo.nombre"
+        [disabled]="grupo.rol !== 'ADMIN'"
+      />
+
+      <b class="rol">Tu rol: {{ grupo.rol }}</b>
+
+      @if (message && messageType === 'error' && !mostrarAgregar && !mostrarConfirmacionGrupo) {
+        <p [class]="messageType">{{ message }}</p>
+      }
+
+      @if (grupo.rol === 'ADMIN') {
+        <button type="button" class="cl-btn rosa chico" (click)="guardarGrupo()">
+          Editar grupo
+        </button>
+      }
+      <div class="lista-miembros">
+        <h3>Miembros del grupo ({{ miembros.length }})</h3>
+
+        @for (miembro of miembros; track miembro.idUsuario; let i = $index) {
+          <div class="miembro">
+            @if (miembro.fotoPerfilUrl) {
+              <img class="av sm" [src]="miembro.fotoPerfilUrl" [alt]="nombreMiembro(miembro)" />
+            } @else {
+              <div class="av sm" [ngClass]="['rosa', 'amarillo', 'azul'][i % 3]">
+                {{ inicial(miembro) }}
+              </div>
+            }
+
+            <div class="info-miembro">
+              <p>{{ nombreMiembro(miembro) }}</p>
+
+              <div class="detalle-miembro">
+                <small>{{ miembro.rol }}</small>
+
+                @if (grupo.rol === 'ADMIN' && miembro.rol !== 'ADMIN') {
+                  <div class="acciones-miembro">
+                    <button
+                      type="button"
+                      class="btn-eliminar"
+                      (click)="confirmarEliminarMiembro(miembro)">
+                      Eliminar
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn-admin"
+                      (click)="confirmarHacerAdmin(miembro)">
+                      Hacer admin
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <p>No hay miembros en este grupo.</p>
+        }
+      </div>
+
+      @if (grupo.rol === 'ADMIN') {
+        <button type="button" class="cl-btn azul chico" (click)="abrirAgregar()">
+          + Agregar integrante
+        </button>
+      }
+
+      @if (grupo.rol === 'ADMIN') {
+        <button
+          type="button"
+          class="cl-btn rosa chico"
+          (click)="confirmarEliminarGrupo()">
+          - Eliminar grupo
+        </button>
+      }
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="confirmarSalirGrupo()">
+        Salir del grupo
+      </button>
+
+      <button type="button" class="cl-lnk" (click)="verInfo = false">
+        Cerrar
+      </button>
+    </form>
+  </div>
+}
+
+@if (mostrarConfirmacionGrupo) {
+  <div class="cl-fondo" (click)="cancelarEliminarGrupo()">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>Eliminar grupo</h2>
+
+      <p>¿Estás seguro de que deseas eliminar este grupo?</p>
+
+      @if (message) {
+        <p [class]="messageType">{{ message }}</p>
+      }
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="eliminarGrupoSeleccionado()">
+        Sí, eliminar
+      </button>
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="cancelarEliminarGrupo()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacionMiembro) {
+  <div class="cl-fondo" (click)="cancelarEliminarMiembro()">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+      <h2>Eliminar miembro</h2>
+
+      <p>
+        ¿Estás seguro de que deseas eliminar a
+        {{ miembroSeleccionado?.nombreCompleto }} del grupo?
+      </p>
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="eliminarMiembro()">
+        Sí, eliminar
+      </button>
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="cancelarEliminarMiembro()">
+        Cancelar
+      </button>
+    </div>
+  </div>
+}
+
+@if (mostrarAgregar) {
+  <div class="cl-fondo" (click)="cerrarAgregar()">
+    <form class="cl-caja" (click)="$event.stopPropagation()" (ngSubmit)="agregarSeleccionados()">
+      <h2>Agregar integrantes</h2>
+
+      <div class="contactos">
+        @for (c of disponibles; track c.idUsuarioContacto; let i = $index) {
+          <label class="ck">
+            <input
+              type="checkbox"
+              [checked]="seleccionados.has(c.idUsuarioContacto)"
+              (change)="alternar(c.idUsuarioContacto)"
+            />
+            @if (c.urlFotoPerfil) {
+              <img class="av sm" [src]="c.urlFotoPerfil" [alt]="c.nombrePersonalizado || c.telefono" />
+            } @else {
+              <div class="av sm" [ngClass]="['rosa', 'amarillo', 'azul'][i % 3]">
+                {{ (c.nombrePersonalizado || c.telefono).charAt(0).toUpperCase() }}
+              </div>
+            }
+            {{ c.nombrePersonalizado || c.telefono }}
+          </label>
+        } @empty {
+          <p>Todos tus contactos ya están en el grupo.</p>
+        }
+      </div>
+
+      @if (message) {
+        <p [class]="messageType">{{ message }}</p>
+      }
+
+      <button type="submit" class="cl-btn">Agregar</button>
+      <button type="button" class="cl-lnk" (click)="cerrarAgregar()">Cancelar</button>
+    </form>
+  </div>
+}
+
+@if (mostrarConfirmacionSalir) {
+  <div class="cl-fondo" (click)="cancelarSalirGrupo()">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+
+      <h2>Salir del grupo</h2>
+
+      <p>¿Estás seguro de que deseas salir de este grupo?</p>
+
+      <button
+        type="button"
+        class="cl-btn rosa chico"
+        (click)="salirDelGrupo()">
+        Sí, salir
+      </button>
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="cancelarSalirGrupo()">
+        Cancelar
+      </button>
+
+    </div>
+  </div>
+}
+
+@if (mostrarConfirmacionAdmin) {
+  <div class="cl-fondo" (click)="cancelarHacerAdmin()">
+    <div class="cl-caja" (click)="$event.stopPropagation()">
+
+      <h2>Cambiar rol</h2>
+
+      <p>
+        ¿Estás seguro de que deseas convertir a
+        {{ miembroSeleccionado?.nombreCompleto }}
+        en administrador del grupo?
+      </p>
+
+      <button
+        type="button"
+        class="cl-btn verde chico"
+        (click)="hacerAdmin()">
+        Sí, hacer administrador
+      </button>
+
+      <button
+        type="button"
+        class="cl-lnk"
+        (click)="cancelarHacerAdmin()">
+        Cancelar
+      </button>
+
+    </div>
+  </div>
+}

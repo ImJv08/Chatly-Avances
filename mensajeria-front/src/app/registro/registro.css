@@ -1,0 +1,198 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:host {
+  --paper: #17171f;
+  --card: #262630;
+  --ink: #f4f1e8;
+  --on: #111;
+  --yellow: #ffc900;
+  --pink: #ff90e8;
+  --blue: #8ec5ff;
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+.registro {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.box {
+  background: var(--card);
+  border: 4px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 24px;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+h1 {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.foto {
+  position: relative;
+  align-self: center;
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background-color: var(--blue);
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+
+/* el input real cubre el círculo, así el toque siempre abre la galería */
+.foto input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.hint {
+  text-align: center;
+  opacity: 0.8;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="password"] {
+  width: 100%;
+  padding: 11px;
+  border: 3px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 0;
+  font: inherit;
+}
+
+.err.ok { color: #7dffa1; }
+
+.err {
+  color: #ff5c8a;
+  font-weight: 700;
+  min-height: 18px;
+  font-size: 14px;
+}
+
+.btn {
+  background: var(--pink);
+  color: var(--on);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 9px 14px;
+  font: inherit;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.lnk {
+  text-align: center;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.campos input {
+  min-width: 0;
+}
+
+/* el número ocupa la fila de abajo, centrado y del ancho de una columna */
+.campos .telefono {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 60%;
+  min-width: 220px;
+}
+
+/* en pantallas pequeñas todo pasa a una sola columna */
+@media (max-width: 520px) {
+  .campos {
+    grid-template-columns: 1fr;
+  }
+  .campos .telefono {
+    width: 100%;
+  }
+}
+
+.campo-password { position: relative; }
+.campo-password input { width: 100%; padding-right: 40px; }
+.campo-password button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/*Mensaje*/
+.alert {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.success { background: #28a745; }
+.error { background: #dc3545; }
+
+@keyframes fadeIn {
+
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+

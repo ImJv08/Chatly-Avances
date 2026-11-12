@@ -1,0 +1,27 @@
+.item {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item .m {
+  flex: 1;
+  min-width: 0;
+}
+
+.item b {
+  display: block;
+}
+
+.item small {
+  opacity: 0.75;
+}
+
+.vacio {
+  text-align: center;
+  opacity: 0.8;
+}
